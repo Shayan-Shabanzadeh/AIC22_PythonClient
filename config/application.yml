@@ -1,0 +1,5 @@
+grpc:
+  server: 'localhost'
+  port: '7000'
+game:
+  token: 'oops'

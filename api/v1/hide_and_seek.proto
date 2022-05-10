@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package ir.sharif.aic.hideandseek.api.grpc;
+
+/**
+  The service of the game
+ */
+
+service GameHandler {
+  rpc DeclareReadiness(DeclareReadinessCommand) returns (DeclareReadinessReply);
+  rpc Watch(WatchCommand) returns(stream GameView);
+  rpc DoAction(DoActionCommand) returns (DoActionReply);
+}
+
+enum Team {
+  FIRST = 0;
+  SECOND = 1;
+}
+
+enum Turn {
+  THIEF_TURN = 0;
+  POLICE_TURN = 1;
+}
+
+enum AgentType {
+  THIEF = 0;
+  POLICE = 1;
+}
+
+enum GameStatus {
+  PENDING = 0;
+  ONGOING = 1;
+  FINISHED = 2;
+}
+
+enum GameResult {
+  UNKNOWN = 0;
+  FIRST_WINS = 1;
+  SECOND_WINS = 2;
+  TIE = 3;
+}
+
+/**
+  Readiness
+ */
+
+message DeclareReadinessCommand {
+  string token = 1;
+  int32 startNodeId = 2;
+}
+
+message DeclareReadinessReply {
+}
+
+/**
+  Action
+ */
+
+message DoActionCommand {
+  string token = 1;
+  int32 toNodeId = 2;
+}
+
+message DoActionReply {
+}
+
+/**
+  Watch
+ */
+
+message WatchCommand {
+  string token = 1;
+}
+
+/**
+  Game
+ */
+
+message Agent {
+  int32 id = 1;
+  Team team = 2;
+  AgentType type = 3;
+  int32 node_id = 4;
+  bool is_dead = 5;
+}
+
+message Node {
+  int32 id = 1;
+}
+
+message Path {
+  int32 id = 1;
+  int32 first_node_id = 2;
+  int32 second_node_id = 3;
+  double price = 4;
+}
+
+message Graph {
+  repeated Path paths = 1;
+  repeated Node nodes = 2;
+}
+
+message GameSpecs {
+  int32 max_thief_count = 1;
+  int32 max_police_count = 2;
+  Graph graph_map = 3;
+}
+
+message GameView {
+  GameStatus status = 1;
+  GameResult result = 2;
+  Turn turn = 3;
+  GameSpecs specs = 4;
+  Agent viewer = 5;
+  double balance = 6;
+  repeated Agent visible_agents = 7;
+}
