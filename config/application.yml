@@ -1,5 +1,8 @@
 grpc:
-  server: 'localhost'
+  server: '127.0.0.1'
   port: '7000'
-game:
-  token: 'oops'
+tokens:
+  - 'token_1'
+  - 'token_2'
+  - 'token_3'
+  - 'token_4'
