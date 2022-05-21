@@ -2,6 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 import hide_and_seek_pb2 as hide__and__seek__pb2
 
 
@@ -20,17 +21,22 @@ class GameHandlerStub(object):
         self.DeclareReadiness = channel.unary_unary(
                 '/ir.sharif.aic.hideandseek.api.grpc.GameHandler/DeclareReadiness',
                 request_serializer=hide__and__seek__pb2.DeclareReadinessCommand.SerializeToString,
-                response_deserializer=hide__and__seek__pb2.DeclareReadinessReply.FromString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.Watch = channel.unary_stream(
                 '/ir.sharif.aic.hideandseek.api.grpc.GameHandler/Watch',
                 request_serializer=hide__and__seek__pb2.WatchCommand.SerializeToString,
                 response_deserializer=hide__and__seek__pb2.GameView.FromString,
                 )
-        self.DoAction = channel.unary_unary(
-                '/ir.sharif.aic.hideandseek.api.grpc.GameHandler/DoAction',
-                request_serializer=hide__and__seek__pb2.DoActionCommand.SerializeToString,
-                response_deserializer=hide__and__seek__pb2.DoActionReply.FromString,
+        self.Move = channel.unary_unary(
+                '/ir.sharif.aic.hideandseek.api.grpc.GameHandler/Move',
+                request_serializer=hide__and__seek__pb2.MoveCommand.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
+        self.SendMessage = channel.unary_unary(
+                '/ir.sharif.aic.hideandseek.api.grpc.GameHandler/SendMessage',
+                request_serializer=hide__and__seek__pb2.ChatCommand.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
 
 
@@ -52,7 +58,13 @@ class GameHandlerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def DoAction(self, request, context):
+    def Move(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SendMessage(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -64,17 +76,22 @@ def add_GameHandlerServicer_to_server(servicer, server):
             'DeclareReadiness': grpc.unary_unary_rpc_method_handler(
                     servicer.DeclareReadiness,
                     request_deserializer=hide__and__seek__pb2.DeclareReadinessCommand.FromString,
-                    response_serializer=hide__and__seek__pb2.DeclareReadinessReply.SerializeToString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'Watch': grpc.unary_stream_rpc_method_handler(
                     servicer.Watch,
                     request_deserializer=hide__and__seek__pb2.WatchCommand.FromString,
                     response_serializer=hide__and__seek__pb2.GameView.SerializeToString,
             ),
-            'DoAction': grpc.unary_unary_rpc_method_handler(
-                    servicer.DoAction,
-                    request_deserializer=hide__and__seek__pb2.DoActionCommand.FromString,
-                    response_serializer=hide__and__seek__pb2.DoActionReply.SerializeToString,
+            'Move': grpc.unary_unary_rpc_method_handler(
+                    servicer.Move,
+                    request_deserializer=hide__and__seek__pb2.MoveCommand.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'SendMessage': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendMessage,
+                    request_deserializer=hide__and__seek__pb2.ChatCommand.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -102,7 +119,7 @@ class GameHandler(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/ir.sharif.aic.hideandseek.api.grpc.GameHandler/DeclareReadiness',
             hide__and__seek__pb2.DeclareReadinessCommand.SerializeToString,
-            hide__and__seek__pb2.DeclareReadinessReply.FromString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -124,7 +141,7 @@ class GameHandler(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def DoAction(request,
+    def Move(request,
             target,
             options=(),
             channel_credentials=None,
@@ -134,8 +151,25 @@ class GameHandler(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/ir.sharif.aic.hideandseek.api.grpc.GameHandler/DoAction',
-            hide__and__seek__pb2.DoActionCommand.SerializeToString,
-            hide__and__seek__pb2.DoActionReply.FromString,
+        return grpc.experimental.unary_unary(request, target, '/ir.sharif.aic.hideandseek.api.grpc.GameHandler/Move',
+            hide__and__seek__pb2.MoveCommand.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SendMessage(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/ir.sharif.aic.hideandseek.api.grpc.GameHandler/SendMessage',
+            hide__and__seek__pb2.ChatCommand.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

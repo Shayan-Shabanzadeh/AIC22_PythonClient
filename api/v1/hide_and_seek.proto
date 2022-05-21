@@ -2,22 +2,31 @@ syntax = "proto3";
 
 package ir.sharif.aic.hideandseek.api.grpc;
 
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+
 /**
   The service of the game
  */
 
 service GameHandler {
-  rpc DeclareReadiness(DeclareReadinessCommand) returns (DeclareReadinessReply);
-  rpc Watch(WatchCommand) returns(stream GameView);
-  rpc DoAction(DoActionCommand) returns (DoActionReply);
+  rpc DeclareReadiness(DeclareReadinessCommand) returns (google.protobuf.Empty);
+  rpc Watch(WatchCommand) returns (stream GameView);
+  rpc Move(MoveCommand) returns (google.protobuf.Empty);
+  rpc SendMessage(ChatCommand) returns (google.protobuf.Empty);
 }
+
+/**
+  Game
+ */
 
 enum Team {
   FIRST = 0;
   SECOND = 1;
 }
 
-enum Turn {
+enum TurnType {
   THIEF_TURN = 0;
   POLICE_TURN = 1;
 }
@@ -39,42 +48,6 @@ enum GameResult {
   SECOND_WINS = 2;
   TIE = 3;
 }
-
-/**
-  Readiness
- */
-
-message DeclareReadinessCommand {
-  string token = 1;
-  int32 startNodeId = 2;
-}
-
-message DeclareReadinessReply {
-}
-
-/**
-  Action
- */
-
-message DoActionCommand {
-  string token = 1;
-  int32 toNodeId = 2;
-}
-
-message DoActionReply {
-}
-
-/**
-  Watch
- */
-
-message WatchCommand {
-  string token = 1;
-}
-
-/**
-  Game
- */
 
 message Agent {
   int32 id = 1;
@@ -100,18 +73,74 @@ message Graph {
   repeated Node nodes = 2;
 }
 
-message GameSpecs {
-  int32 max_thief_count = 1;
-  int32 max_police_count = 2;
-  Graph graph_map = 3;
+message IncomeSettings {
+  double policeIncomeEachTurn = 1;
+  double thievesIncomeEachTurn = 2;
 }
 
+message TurnSettings{
+  int32 maxTurn = 1;
+  repeated int32 visibleTurns = 2;
+}
+
+message GameConfig {
+  Graph graph = 1;
+  IncomeSettings incomeSettings = 2;
+  TurnSettings turnSettings = 3;
+}
+
+/**
+  Readiness
+ */
+
+message DeclareReadinessCommand {
+  string token = 1;
+  int32 startNodeId = 2;
+}
+
+/**
+  Move
+ */
+
+message MoveCommand {
+  string token = 1;
+  int32 toNodeId = 2;
+}
+
+/**
+  Watch
+ */
+
+message WatchCommand {
+  string token = 1;
+}
+
+message Turn {
+  int32 turnNumber = 1;
+  TurnType turnType = 2;
+}
 message GameView {
   GameStatus status = 1;
   GameResult result = 2;
   Turn turn = 3;
-  GameSpecs specs = 4;
+  GameConfig config = 4;
   Agent viewer = 5;
   double balance = 6;
   repeated Agent visible_agents = 7;
+}
+
+/**
+  Chat
+ */
+
+message ChatCommand {
+  string token = 1;
+  string text = 2;
+}
+
+message Chat {
+  string id = 1;
+  int32 fromAgentId = 2;
+  string text = 3;
+  google.protobuf.Timestamp timeStamp = 4 ;
 }
