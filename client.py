@@ -39,17 +39,21 @@ class GameClient:
                     print(self.token)
                     try:
                         self.stub.DeclareReadiness(self.get_join_game_command(view))
-                    except Exception:
-                        print(traceback.format_exc())
+                    except Exception as e:
+                        print(str(e))
                     self.set_ai_methods(view)
                 elif self.check_if_is_client_turn_to_move(view):
                     try:
                         self.send_message(view)
+                    except Exception as e:
+                        print(str(e))
+                    try:
                         self.move(view)
                         self.has_moved = True
-                    except Exception:
-                        print(traceback.format_exc())
+                    except Exception as e:
+                        print(e)
         except Exception:
+            print(traceback.format_exc())
             self.channel.unsubscribe()
             exit()
 
@@ -67,9 +71,9 @@ class GameClient:
         return False
 
     def send_message(self, view):
-        chat_command = self.ai_chat_method(view)
-        if chat_command:
-            self.stub.SendMessage(chat_command)
+        message = self.ai_chat_method(view)
+        if message:
+            self.stub.SendMessage(ChatCommand(token=self.token, text=message))
 
     def move(self, view):
         node_id = self.ai_move_method(view)
